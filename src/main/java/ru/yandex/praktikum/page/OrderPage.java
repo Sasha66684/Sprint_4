@@ -1,72 +1,79 @@
 package ru.yandex.praktikum.page;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import static java.time.Duration.ofSeconds;
 
-
-public class OrderPage {
 //Страница заказа "Для кого самокат"
+public class OrderPage {
+
     private final WebDriver webDriver;
-    private final By nameInputLocator = By.xpath("//input[@placeholder='* Имя']");
     //Локатор для поле "Имя"
-    private final By  lastNameInputLocator = By.xpath(".//input[@placeholder='* Фамилия']");
+    private final By orderDataName = By.xpath("//input[@placeholder='* Имя']");
     //Локатор для поле "Фамилия"
-    private final By orderAddressLocator = By.xpath("//input[@placeholder='* Адрес: куда привезти заказ']");
+    private final By  orderDataSurname = By.xpath(".//input[@placeholder='* Фамилия']");
     //Локатор для поле "Адрес: куда привезти заказ"
-    private final By subwayInputLocator = By.xpath("//input[@placeholder='* Станция метро']");
+    private final By orderDataAddress = By.xpath("//input[@placeholder='* Адрес: куда привезти заказ']");
     //Локатор для поле "Станция метро"
-    private final By phoneNumberLocator = By.xpath("//input[@placeholder='* Телефон: на него позвонит курьер']");
+    private By orderDataSubwayStation = By.className("select-search__input");
+
+    private By orderSelectorSubwayStation = By.className("select-search__select");
+    //////// private final By subwayInputLocator = By.xpath("//input[@placeholder='* Станция метро']");
     //Локатор для поле "Телефон: на него позвонит курьер"
-    private final By nexButtonLocator = By.xpath("//button[text()='Далее']");
+    private  By orderDataTelephoneLocator = By.xpath("//input[@placeholder='* Телефон: на него позвонит курьер']");
     //Локатор для кнопки "далее"
-    private final  String statioMenuInputLocator = "//div[text()='%s']";
+    private  By orderButtonFurtherLocator = By.xpath(".//button[(@class ='Button_Button__ra12g Button_Middle__1CSJM' and text()='Далее')]");
     //Локатор для выбора станции метро
+   // ///////private final  String statioMenuInputLocator = "//div[text()='%s']";
+
     public OrderPage(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
+    //метод для ввода Имени
+    public void enterOrderDataName(String name) {
+        webDriver.findElement(orderDataName).sendKeys(name);
+    }
+    //метод для ввода Фамилии
+    public void enterOrderDataSurname(String surname) {
 
+        webDriver.findElement(orderDataSurname).sendKeys(surname);
+    }
+    //метод для ввода Адреса
+    public void enterOrderDataAddress(String address) {
+        webDriver.findElement(orderDataAddress).sendKeys(address);
 
-    public void fillCustormerInfo(String name, String lastname, String address, String subwayTitle, String phone) {
+    }
+    //метод обращения к полю Станция метро и выбора станции
+    public void clickOrderDataSubwayStation() {
+        webDriver.findElement(orderDataSubwayStation).click();
+        webDriver.findElement(orderSelectorSubwayStation).isDisplayed();
+        webDriver.findElement(orderDataSubwayStation).sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
+    }
+    //метод для ввода номера Телефона
+    public void enterOrderDataTelephone(String telephone) {
+        webDriver.findElement(orderDataTelephoneLocator).sendKeys(telephone);
 
-
-
-        WebElement nameInput = webDriver.findElement(nameInputLocator);
-        nameInput.sendKeys(name);
-//Поле ввода имени на странице  "Для кого самокат"
-
-        WebElement lastNameInput = webDriver.findElement(lastNameInputLocator);
-        lastNameInput.sendKeys(lastname);
-// Поле ввода фамилии на странице  "Для кого самокат"
-
-        WebElement orderAddress = webDriver.findElement(orderAddressLocator);
-        orderAddress.sendKeys(address);
-//Ввод в поле "Адрес" куда доставить самокат на странице  "Для кого самокат"
-
-        WebElement subwayInput = webDriver.findElement(subwayInputLocator);
-        subwayInput.click();
-//Нажатие на поле "Станция метро" на странице  "Для кого самокат"
-        WebElement perovoStationMenu = webDriver.findElement(By.xpath (String.format(statioMenuInputLocator, subwayTitle)));
-
-        ((JavascriptExecutor) webDriver). executeScript("arguments[0].scrollIntoView();", perovoStationMenu);
-        perovoStationMenu.click();
-        //скролл до нужной станции метро
-//Выбор станции метро куда доставить самокат на странице  "Для кого самокат"
-
-        WebElement phoneNumber = webDriver.findElement(phoneNumberLocator);
-        phoneNumber.sendKeys(phone);
-        //Ввод номера телефона на странице  "Для кого самокат"
     }
 
-    public void clickNextButton() {
-        WebElement nextButton = webDriver.findElement(nexButtonLocator);
-     new WebDriverWait(webDriver, ofSeconds(15)).until(ExpectedConditions.elementToBeClickable(nextButton));
-        nextButton.click();
-        // Ожидание при нажатии на кнопку "Далее"
-//Кнопка "Далее" на странице  "Для кого самокат"
+    //кликнуть по кнопке Далее на старнице Для кого самокат
+    public void clickOrderButtonFurther() {
+
+
+          new WebDriverWait(webDriver, ofSeconds(15)).until(ExpectedConditions.elementToBeClickable(orderButtonFurtherLocator));
+        webDriver.findElement(orderButtonFurtherLocator).click();
+    }
+    //общий метод для ввода имени, фамилии, адреса, выбора станции, телефона, также кликает по кнопке Далее
+    public OrderPage enterOrderAllData(String name, String surname, String address, String telephone) {
+        enterOrderDataName(name);
+        enterOrderDataSurname(surname);
+        enterOrderDataAddress(address);
+        clickOrderDataSubwayStation();
+        enterOrderDataTelephone(telephone);
+        clickOrderButtonFurther();
+        return this;
+
     }
 }
+
+

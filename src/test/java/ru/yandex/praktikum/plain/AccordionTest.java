@@ -16,7 +16,6 @@ public class AccordionTest {
     private static final String BROWSER = "chrome";
     private WebDriver webDriver;
 
-
     private int index;
     private String answer;
 
@@ -27,7 +26,7 @@ public class AccordionTest {
 
     @Parameterized.Parameters(name = "{index}. answer {1}")
     public static Object[][] data() {
-        return new Object[][]{
+        return new Object[][]{      // передали тестовые данные
                 {0, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
                 {1, "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
                 {2, "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
@@ -36,7 +35,7 @@ public class AccordionTest {
                 {5, "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится."},
                 {6, "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои."},
                 {7, "Да, обязательно. Всем самокатов! И Москве, и Московской области."},
-                // передали тестовые данные
+
         };
     }
 
@@ -49,18 +48,18 @@ webDriver.get("https://qa-scooter.praktikum-services.ru");
 
     @Test
     public void accordionTest() {
-        MainPage mainPage = new MainPage(webDriver);
+       MainPage mainPage =new MainPage(webDriver);
         mainPage.closeCookiesWindow();
         mainPage.expandQuestion(index);
         boolean answerIsDisplayed = mainPage.answerIsDisplayed(answer);
         assertTrue(answerIsDisplayed);
 
     }
-
+    //Закрываем браузер
     @After
     public void tearDown() {
         webDriver.quit();
-        //Закрываем браузер
+
     }
 }
 

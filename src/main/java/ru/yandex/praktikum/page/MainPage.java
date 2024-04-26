@@ -8,56 +8,69 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import static java.time.Duration.ofSeconds;
 
+//Главная страница "Яндекс Самоката"
 public  class MainPage{
-    //Главная страница "Яндекс Самоката"
-    private  WebDriver webDriver;
 
-    private By createUpOrderButtonLocator = By.xpath("//div[contains(@class,'Header')]/button[text()='Заказать']");
+    private WebDriver webDriver;
     //Верняя в правом углу кнопка "Заказать"
-    private By createDownOrderButtonLocator = By.xpath("//div[@class = 'Home_FinishButton__1_cWm']/button[text()='Заказать']");
+    private By higherOrderButtonLocator = By.xpath("//div[contains(@class,'Header')]/button[text()='Заказать']");
     //Нижняя по центру  кнопка "Заказать"
-    private By cookiesButtonLocator = By.id("rcc-confirm-button");
+    private By lowerOrderButtonLocator = By.xpath("//div[@class = 'Home_FinishButton__1_cWm']/button[text()='Заказать']");
     //Кнопка "да все привыкли" в низу в сообщении о куки
+    private By cookiesButtonLocator = By.id("rcc-confirm-button");
+
     private final String questionLocator ="accordion__heading-%s";
     private final String answerLocator ="//div[contains(@id, 'accordion__panel')][.='%s']";
     public  MainPage(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
-    public void clickUpCreateOrder() {
-        WebElement createUpOrderButton = webDriver.findElement(createUpOrderButtonLocator);
-        //кнопка "заказать" в верхнем в правом углу на главной странице
-       new WebDriverWait(webDriver, ofSeconds(15)).until(ExpectedConditions.elementToBeClickable(createUpOrderButton));
-       createUpOrderButton.click();
-        //ожидание при нажатии на кнопку "Заказать" в верху
+
+
+
+    //кликнуть по верхней кнопке Заказать на главной странице
+    public void higherOrderButtonClick() {
+
+        webDriver.findElement(higherOrderButtonLocator).click();
 
     }
-
-    public void clickDownCreateOrder() {
-       WebElement createDownOrderButton = webDriver.findElement(createDownOrderButtonLocator);
-        // метод кнопки заказать внизу страницы по центру
-       ((JavascriptExecutor)webDriver).executeScript("arguments[0].scrollIntoView();", createDownOrderButton);
-// скролл страницы до кнопки "Заказать"
-       new WebDriverWait(webDriver, ofSeconds(25))
-              .until(ExpectedConditions.elementToBeClickable(createDownOrderButton));
-       createDownOrderButton.click();
-        //кликнуть на кнопку заказать
-
+    //кликнуть по нижней кнопке Заказать
+    public MainPage lowerOrderButtonClick() {
+        WebElement element = webDriver.findElement(lowerOrderButtonLocator);
+        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView();", element);
+        webDriver.findElement(lowerOrderButtonLocator).click();
+        return this;
+    }
+    //выбор кнопки Заказать на странице
+    public MainPage chooseOrderButtonAndClick(String buttonLocation) {
+        if (buttonLocation.equals("up")) {
+            higherOrderButtonClick();
+            return this;
+        } else if (buttonLocation.equals("down")) {
+            lowerOrderButtonClick();
+            return this;
         }
-        public void closeCookiesWindow() {
-        webDriver.findElement(cookiesButtonLocator).click();
-        // метод нажатие на кнопку "да все привыкли" в низу в сообщении о куки
+        return this;
     }
+    // метод нажатие на кнопку "да" все привыкли" в низу в сообщении о куки
+    public void closeCookiesWindow() {
+        webDriver.findElement(cookiesButtonLocator).click();
+
+    }
+    //Метод для аккордиона "Вопросы о важном"
     public void expandQuestion(int index) {
         WebElement element = webDriver.findElement(By.id(String.format(questionLocator, index)));
-//Метод для аккордиона ("Вопросы о важном")
-        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView();", element);
 //скролл для аккордиона
-        new WebDriverWait(webDriver, ofSeconds(15)).until(ExpectedConditions.elementToBeClickable(element));
+        ((JavascriptExecutor) webDriver).executeScript("arguments[0].scrollIntoView();", element);
+
+        new WebDriverWait(webDriver, ofSeconds(20)).until(ExpectedConditions.elementToBeClickable(element));
+        //скролл и ожидание времени для аккордиона
         element.click();
-    } //скролл и ожидание времени для аккордиона
+    }
+
+    //Метод для сравнения вопросов с ответами в аккордионе
     public boolean answerIsDisplayed(String expectedAnswer) {
         WebElement element = webDriver.findElement(By.xpath(String.format(answerLocator, expectedAnswer)));
         return element.isDisplayed();
-        //Метод для сравнения вопросов с ответами в аккордионе
+
     }
 }
